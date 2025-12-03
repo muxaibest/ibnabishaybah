@@ -1,0 +1,8 @@
+{
+  "name": "Musannaf Ibn Abi Shaybah",
+  "short_name": "Musannaf",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd"
+}

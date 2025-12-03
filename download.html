@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Download - Musannaf Ibn Abi Shaybah</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <h1>Download Musannaf Ibn Abi Shaybah</h1>
+
+    <div id="nav" style="text-align:center; margin-bottom:20px;">
+        <a href="index.html">Home</a> | 
+        <a href="about.html">About the Book</a> | 
+        <a href="download.html">Download</a>
+    </div>
+
+    <div style="max-width:900px; margin:auto; padding:15px; background:#ffffff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05); line-height:1.7;">
+        <p>Click the links below to download the PDF volumes of <em>Musannaf Ibn Abi Shaybah</em>. All files are provided in order:</p>
+        <ul id="pdf-list"></ul>
+    </div>
+
+    <script>
+        // List of PDFs (you can update automatically if you have server-side access)
+        const pdfFolder = "download_files/";
+        const pdfFiles = [
+            "imam_ibn_abi_shaybah_01.pdf",
+            "imam_ibn_abi_shaybah_02.pdf",
+            "imam_ibn_abi_shaybah_03.pdf",
+            "imam_ibn_abi_shaybah_04.pdf",
+            "imam_ibn_abi_shaybah_05.pdf",
+            "imam_ibn_abi_shaybah_06.pdf",
+            "imam_ibn_abi_shaybah_07.pdf",
+            "imam_ibn_abi_shaybah_08.pdf",
+            "imam_ibn_abi_shaybah_09.pdf",
+            "imam_ibn_abi_shaybah_10.pdf",
+            "imam_ibn_abi_shaybah_11.pdf",
+            "imam_ibn_abi_shaybah_12.pdf",
+            "imam_ibn_abi_shaybah_13.pdf",
+            "imam_ibn_abi_shaybah_14.pdf",
+            "imam_ibn_abi_shaybah_15.pdf",
+            "imam_ibn_abi_shaybah_16.pdf",
+            "imam_ibn_abi_shaybah_17.pdf",
+            "imam_ibn_abi_shaybah_18.pdf",
+            "imam_ibn_abi_shaybah_19.pdf",
+            "imam_ibn_abi_shaybah_20.pdf",
+            "imam_ibn_abi_shaybah_21.pdf",
+            "imam_ibn_abi_shaybah_22.pdf"
+            // Add more if you convert the rest
+        ];
+
+        const listContainer = document.getElementById("pdf-list");
+
+        pdfFiles.forEach((file, index) => {
+            const li = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = pdfFolder + file;
+            link.target = "_blank";
+            link.textContent = `Volume ${index + 1} (${file})`;
+            li.appendChild(link);
+            listContainer.appendChild(li);
+        });
+    </script>
+
+</body>
+</html>
