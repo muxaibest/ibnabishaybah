@@ -22,33 +22,14 @@
     </div>
 
     <script>
-        // List of PDFs (you can update automatically if you have server-side access)
         const pdfFolder = "download_files/";
-        const pdfFiles = [
-            "imam_ibn_abi_shaybah_01.pdf",
-            "imam_ibn_abi_shaybah_02.pdf",
-            "imam_ibn_abi_shaybah_03.pdf",
-            "imam_ibn_abi_shaybah_04.pdf",
-            "imam_ibn_abi_shaybah_05.pdf",
-            "imam_ibn_abi_shaybah_06.pdf",
-            "imam_ibn_abi_shaybah_07.pdf",
-            "imam_ibn_abi_shaybah_08.pdf",
-            "imam_ibn_abi_shaybah_09.pdf",
-            "imam_ibn_abi_shaybah_10.pdf",
-            "imam_ibn_abi_shaybah_11.pdf",
-            "imam_ibn_abi_shaybah_12.pdf",
-            "imam_ibn_abi_shaybah_13.pdf",
-            "imam_ibn_abi_shaybah_14.pdf",
-            "imam_ibn_abi_shaybah_15.pdf",
-            "imam_ibn_abi_shaybah_16.pdf",
-            "imam_ibn_abi_shaybah_17.pdf",
-            "imam_ibn_abi_shaybah_18.pdf",
-            "imam_ibn_abi_shaybah_19.pdf",
-            "imam_ibn_abi_shaybah_20.pdf",
-            "imam_ibn_abi_shaybah_21.pdf",
-            "imam_ibn_abi_shaybah_22.pdf"
-            // Add more if you convert the rest
-        ];
+
+        // Automatically generate list 1–38
+        const pdfFiles = [];
+        for (let i = 1; i <= 38; i++) {
+            const num = String(i).padStart(2, "0");
+            pdfFiles.push(`imam_ibn_abi_shaybah_${num}.pdf`);
+        }
 
         const listContainer = document.getElementById("pdf-list");
 
@@ -57,7 +38,7 @@
             const link = document.createElement("a");
             link.href = pdfFolder + file;
             link.target = "_blank";
-            link.textContent = `Volume ${index + 1} (${file})`;
+            link.textContent = `Volume ${index + 1}`;
             li.appendChild(link);
             listContainer.appendChild(li);
         });
