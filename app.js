@@ -14,7 +14,7 @@ function getURLParam(name, defaultValue) {
     return params.get(name) ? params.get(name) : defaultValue;
 }
 
-let currentFile = getURLParam("file", "001");  // default: file 001
+let currentFile = getURLParam("file", "001");  
 let currentPage = parseInt(getURLParam("page", "1"), 10);
 let jumpHadith = parseInt(getURLParam("jump", "0"), 10);
 let currentHadithNumber = jumpHadith > 0 ? jumpHadith : null;
@@ -38,7 +38,7 @@ async function loadChunk(fileNumber) {
 }
 
 //---------------------------------------------------------
-// Render hadith list for the current page
+// Render hadith list for the current page or jump
 //---------------------------------------------------------
 function renderPage(hadiths) {
     const results = document.getElementById("results");
@@ -47,26 +47,26 @@ function renderPage(hadiths) {
     let pageHadiths = [];
 
     if (jumpHadith > 0) {
-        // Show only the specific hadith
         const match = hadiths.find(h => h.hadith_id === jumpHadith);
         if (match) pageHadiths = [match];
         else results.innerHTML = "<p>Hadith not found in this file.</p>";
     } else {
-        // Normal pagination
         const start = (currentPage - 1) * PAGE_SIZE;
         const end = start + PAGE_SIZE;
         pageHadiths = hadiths.slice(start, end);
     }
 
-    pageHadiths.forEach((h) => {
+    // Update currentHadithNumber if not set
+    if (!currentHadithNumber) {
+        currentHadithNumber = pageHadiths.length > 0 ? pageHadiths[0].hadith_id : 1;
+    }
+
+    pageHadiths.forEach(h => {
         const div = document.createElement("div");
         div.className = "hadith";
-
-        // Highlight if this is the jump hadith
         if (jumpHadith > 0 && h.hadith_id === jumpHadith) {
             div.classList.add("highlight");
         }
-
         div.innerHTML = `
             <div class="hadith-id">Hadith #${h.hadith_id}</div>
             <div class="ar">${h.arabic_text}</div>
@@ -76,20 +76,27 @@ function renderPage(hadiths) {
         results.appendChild(div);
     });
 
-    // Add navigation for jump mode
-    if (jumpHadith > 0) {
-        const navDiv = document.createElement("div");
+    renderNavigationButtons();
+    if (jumpHadith === 0) renderPaginationControls(hadiths.length);
+}
+
+//---------------------------------------------------------
+// Navigation buttons (Next/Previous)
+//---------------------------------------------------------
+function renderNavigationButtons() {
+    let navDiv = document.getElementById("jump-navigation");
+    if (!navDiv) {
+        navDiv = document.createElement("div");
         navDiv.id = "jump-navigation";
         navDiv.style.marginTop = "10px";
-        navDiv.innerHTML = `
-            <button ${currentHadithNumber <= 1 ? "disabled" : ""} onclick="showPrevHadith()">Previous</button>
-            <button ${currentHadithNumber >= MAX_HADITH ? "disabled" : ""} onclick="showNextHadith()">Next</button>
-        `;
-        results.appendChild(navDiv);
+        navDiv.style.textAlign = "center";
+        document.getElementById("results").appendChild(navDiv);
     }
 
-    // Only show pagination if not a jump
-    if (jumpHadith === 0) renderPaginationControls(hadiths.length);
+    navDiv.innerHTML = `
+        <button ${currentHadithNumber <= 1 ? "disabled" : ""} onclick="showPrevHadith()">Previous</button>
+        <button ${currentHadithNumber >= MAX_HADITH ? "disabled" : ""} onclick="showNextHadith()">Next</button>
+    `;
 }
 
 //---------------------------------------------------------
@@ -107,10 +114,10 @@ function renderPaginationControls(total) {
 }
 
 function goPage(pageNum) {
-    const params = new URLSearchParams(window.location.search);
-    params.set("page", pageNum);
-    params.set("file", currentFile);
-    window.location.search = params.toString();
+    currentPage = pageNum;
+    const startHadith = (currentPage - 1) * PAGE_SIZE + 1;
+    currentHadithNumber = startHadith;
+    loadChunk(currentFile).then(hadiths => renderPage(hadiths));
 }
 
 //---------------------------------------------------------
@@ -128,16 +135,14 @@ function jumpToHadith() {
     currentHadithNumber = hadithNumber;
     jumpHadith = hadithNumber;
 
-    // Determine chunk
     let chunkIndex = Math.floor((hadithNumber - 1) / HADITHS_PER_CHUNK) + 1;
     currentFile = chunkIndex.toString().padStart(3, "0");
 
-    // Load chunk and render
     loadChunk(currentFile).then(hadiths => renderPage(hadiths));
 }
 
 //---------------------------------------------------------
-// Next / Previous hadith for jump mode
+// Next / Previous hadith
 //---------------------------------------------------------
 function showNextHadith() {
     if (currentHadithNumber < MAX_HADITH) {
@@ -162,7 +167,6 @@ function updatePerPage() {
     const sel = document.getElementById("perPage").value;
     PAGE_SIZE = sel === "all" ? HADITHS_PER_CHUNK : parseInt(sel, 10);
 
-    // Reload current chunk
     loadChunk(currentFile).then(hadiths => renderPage(hadiths));
 }
 
@@ -175,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const perPageSelect = document.getElementById("perPage");
 
     if (input) {
-        input.addEventListener("keyup", function(event) {
+        input.addEventListener("keyup", event => {
             if (event.key === "Enter") jumpToHadith();
         });
     }
@@ -191,6 +195,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // Load everything on page start
 //---------------------------------------------------------
 async function start() {
+    // Initialize currentHadithNumber for normal pagination
+    if (!currentHadithNumber) {
+        currentHadithNumber = (currentPage - 1) * PAGE_SIZE + 1;
+    }
+
     const hadiths = await loadChunk(currentFile);
     renderPage(hadiths);
 }
