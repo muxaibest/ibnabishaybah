@@ -10,25 +10,26 @@
 </head>
 
 <body>
-    <header style="text-align:center; margin-bottom:20px;">
+    <header style="text-align:center; margin-bottom:30px;">
         <h1>Musannaf Ibn Abi Shaybah</h1>
         <h2 class="site-subtitle">Complete 37K+ Hadiths in Arabic and English Translation</h2>
     </header>
 
     <!-- Navigation -->
-    <nav id="nav" style="text-align:center; margin-bottom:20px;">
+    <nav id="nav" style="text-align:center; margin-bottom:30px;">
         <a href="index.html">Home</a> | 
         <a href="about.html">About the Book</a> | 
         <a href="download.html">Download</a>
     </nav>
 
     <!-- Search & Controls -->
-    <div id="search-controls" style="text-align:center; margin-bottom:25px;">
+    <div id="search-controls" style="text-align:center; margin-bottom:30px;">
         <!-- Jump to Hadith -->
         <label for="hadith-number-input">Go to Hadith #:</label>
         <input type="number" id="hadith-number-input" min="1" max="37943" 
-               placeholder="Enter hadith number" style="padding:5px; width:120px; margin-left:5px;" />
-        <button id="jumpBtn" style="padding:5px 10px; margin-left:5px;">Go</button>
+               placeholder="Enter hadith number" 
+               style="padding:5px; width:120px; margin-left:5px;" />
+        <button id="jumpBtn" style="padding:5px 12px; margin-left:5px;">Go</button>
 
         <!-- Hadiths per page -->
         <label for="perPage" style="margin-left:20px;">Hadiths per page:</label>
@@ -37,18 +38,18 @@
             <option value="10" selected>10</option>
             <option value="100">100</option>
             <option value="1000">1000</option>
-            <option value="all">All</option>
+            <option value="all">All (auto-load multiple chunks)</option>
         </select>
     </div>
 
     <!-- Results container -->
-    <div id="results" style="margin-bottom:20px;"></div>
+    <div id="results" style="max-width:900px; margin:auto; margin-bottom:30px;"></div>
 
     <!-- Jump navigation buttons (Next/Previous) -->
-    <div id="jump-navigation" style="text-align:center; margin-bottom:20px;"></div>
+    <div id="jump-navigation" style="text-align:center; margin-bottom:30px;"></div>
 
-    <!-- Pagination container -->
-    <div id="pagination" style="text-align:center; margin-bottom:20px;"></div>
+    <!-- Pagination controls -->
+    <div id="pagination" style="text-align:center; margin-bottom:30px;"></div>
 
     <!-- JavaScript -->
     <script src="app.js"></script>

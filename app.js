@@ -38,9 +38,28 @@ async function loadChunk(fileNumber) {
 }
 
 //---------------------------------------------------------
-// Render hadith list for the current page or jump
+// Load multiple chunks for “all” selection
 //---------------------------------------------------------
-function renderPage(hadiths) {
+async function loadAllChunks(startHadith = 1, count = MAX_HADITH) {
+    const startChunk = Math.floor((startHadith - 1) / HADITHS_PER_CHUNK) + 1;
+    const endHadith = Math.min(startHadith + count - 1, MAX_HADITH);
+    const endChunk = Math.floor((endHadith - 1) / HADITHS_PER_CHUNK) + 1;
+
+    let allHadiths = [];
+    for (let chunk = startChunk; chunk <= endChunk; chunk++) {
+        const chunkData = await loadChunk(String(chunk).padStart(3, "0"));
+        allHadiths = allHadiths.concat(chunkData);
+    }
+
+    // Slice to exact range if startHadith is not first in chunk
+    allHadiths = allHadiths.filter(h => h.hadith_id >= startHadith && h.hadith_id <= endHadith);
+    return allHadiths;
+}
+
+//---------------------------------------------------------
+// Render hadith list
+//---------------------------------------------------------
+async function renderPage(hadiths) {
     const results = document.getElementById("results");
     results.innerHTML = "";
 
@@ -51,12 +70,15 @@ function renderPage(hadiths) {
         if (match) pageHadiths = [match];
         else results.innerHTML = "<p>Hadith not found in this file.</p>";
     } else {
+        if (PAGE_SIZE === HADITHS_PER_CHUNK) {
+            // Load all remaining chunks automatically
+            hadiths = await loadAllChunks((currentPage - 1) * PAGE_SIZE + 1, PAGE_SIZE);
+        }
         const start = (currentPage - 1) * PAGE_SIZE;
         const end = start + PAGE_SIZE;
         pageHadiths = hadiths.slice(start, end);
     }
 
-    // Update currentHadithNumber if not set
     if (!currentHadithNumber) {
         currentHadithNumber = pageHadiths.length > 0 ? pageHadiths[0].hadith_id : 1;
     }
@@ -77,7 +99,7 @@ function renderPage(hadiths) {
     });
 
     renderNavigationButtons();
-    if (jumpHadith === 0) renderPaginationControls(hadiths.length);
+    if (jumpHadith === 0 && PAGE_SIZE !== HADITHS_PER_CHUNK) renderPaginationControls(hadiths.length);
 }
 
 //---------------------------------------------------------
@@ -115,13 +137,16 @@ function renderPaginationControls(total) {
 
 function goPage(pageNum) {
     currentPage = pageNum;
-    const startHadith = (currentPage - 1) * PAGE_SIZE + 1;
-    currentHadithNumber = startHadith;
-    loadChunk(currentFile).then(hadiths => renderPage(hadiths));
+    currentHadithNumber = (currentPage - 1) * PAGE_SIZE + 1;
+    if (PAGE_SIZE === HADITHS_PER_CHUNK) {
+        loadAllChunks(currentHadithNumber, PAGE_SIZE).then(hadiths => renderPage(hadiths));
+    } else {
+        loadChunk(currentFile).then(hadiths => renderPage(hadiths));
+    }
 }
 
 //---------------------------------------------------------
-// Jump to hadith by number (with validation)
+// Jump to hadith by number
 //---------------------------------------------------------
 function jumpToHadith() {
     const input = document.getElementById("hadith-number-input");
@@ -167,41 +192,39 @@ function updatePerPage() {
     const sel = document.getElementById("perPage").value;
     PAGE_SIZE = sel === "all" ? HADITHS_PER_CHUNK : parseInt(sel, 10);
 
-    loadChunk(currentFile).then(hadiths => renderPage(hadiths));
+    if (PAGE_SIZE === HADITHS_PER_CHUNK) {
+        loadAllChunks(currentHadithNumber, PAGE_SIZE).then(hadiths => renderPage(hadiths));
+    } else {
+        loadChunk(currentFile).then(hadiths => renderPage(hadiths));
+    }
 }
 
 //---------------------------------------------------------
-// Add Enter key listener
+// Event listeners
 //---------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("hadith-number-input");
     const goBtn = document.getElementById("jumpBtn");
     const perPageSelect = document.getElementById("perPage");
 
-    if (input) {
-        input.addEventListener("keyup", event => {
-            if (event.key === "Enter") jumpToHadith();
-        });
-    }
-
+    if (input) input.addEventListener("keyup", e => { if (e.key === "Enter") jumpToHadith(); });
     if (goBtn) goBtn.addEventListener("click", jumpToHadith);
-
-    if (perPageSelect) {
-        perPageSelect.addEventListener("change", updatePerPage);
-    }
+    if (perPageSelect) perPageSelect.addEventListener("change", updatePerPage);
 });
 
 //---------------------------------------------------------
-// Load everything on page start
+// Start
 //---------------------------------------------------------
 async function start() {
-    // Initialize currentHadithNumber for normal pagination
-    if (!currentHadithNumber) {
-        currentHadithNumber = (currentPage - 1) * PAGE_SIZE + 1;
-    }
+    if (!currentHadithNumber) currentHadithNumber = (currentPage - 1) * PAGE_SIZE + 1;
 
-    const hadiths = await loadChunk(currentFile);
-    renderPage(hadiths);
+    if (PAGE_SIZE === HADITHS_PER_CHUNK) {
+        const hadiths = await loadAllChunks(currentHadithNumber, PAGE_SIZE);
+        renderPage(hadiths);
+    } else {
+        const hadiths = await loadChunk(currentFile);
+        renderPage(hadiths);
+    }
 }
 
 start();
