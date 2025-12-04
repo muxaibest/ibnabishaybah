@@ -5,53 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Musannaf Ibn Abi Shaybah</title>
 
-    <!-- Local stylesheet -->
+    <!-- Correct local path -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <header style="text-align:center; margin-bottom:30px;">
-        <h1>Musannaf Ibn Abi Shaybah</h1>
-        <h2 class="site-subtitle">Complete 37K+ Hadiths in Arabic and English Translation</h2>
-    </header>
 
-    <!-- Navigation -->
-    <nav id="nav" style="text-align:center; margin-bottom:30px;">
-        <a href="index.html">Home</a> | 
-        <a href="about.html">About the Book</a> | 
-        <a href="download.html">Download</a>
-    </nav>
+    <h1>Musannaf Ibn Abi Shaybah</h1>
+    <h2 class="site-subtitle">Complete 37K+ Hadiths in Arabic and English Translation</h2>
+    
+<div id="nav" style="text-align:center; margin-bottom:20px;">
+    <a href="index.html">Home</a> | 
+    <a href="about.html">About the Book</a> | 
+    <a href="download.html">Download</a>
+</div>
 
-    <!-- Search & Controls -->
-    <div id="search-controls" style="text-align:center; margin-bottom:30px;">
-        <!-- Jump to Hadith -->
-        <label for="hadith-number-input">Go to Hadith #:</label>
-        <input type="number" id="hadith-number-input" min="1" max="37943" 
-               placeholder="Enter hadith number" 
-               style="padding:5px; width:120px; margin-left:5px;" />
-        <button id="jumpBtn" style="padding:5px 12px; margin-left:5px;">Go</button>
-
-        <!-- Hadiths per page -->
-        <label for="perPage" style="margin-left:20px;">Hadiths per page:</label>
-        <select id="perPage" style="padding:5px; margin-left:5px;">
-            <option value="1">1</option>
-            <option value="10" selected>10</option>
-            <option value="100">100</option>
-            <option value="1000">1000</option>
-            <option value="all">All (auto-load multiple chunks)</option>
-        </select>
+    <!-- Jump to Hadith by Number -->
+    <div id="jump-container" style="text-align:center; margin-bottom:20px;">
+        <input type="number" id="hadith-number-input" placeholder="Enter Hadith Number" style="padding:5px; width:150px;" />
+        <button onclick="jumpToHadith()" style="padding:5px 10px;">Go</button>
     </div>
 
-    <!-- Results container -->
-    <div id="results" style="max-width:900px; margin:auto; margin-bottom:30px;"></div>
+    <!-- JS expects this ID -->
+    <div id="results"></div>
 
-    <!-- Jump navigation buttons (Next/Previous) -->
-    <div id="jump-navigation" style="text-align:center; margin-bottom:30px;"></div>
+    <!-- JS expects this ID -->
+    <div id="pagination"></div>
 
-    <!-- Pagination controls -->
-    <div id="pagination" style="text-align:center; margin-bottom:30px;"></div>
-
-    <!-- JavaScript -->
+    <!-- Correct local path -->
     <script src="app.js"></script>
 </body>
 </html>
