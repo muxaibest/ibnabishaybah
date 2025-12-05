@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Musannaf Ibn Abi Shaybah</title>
 
-    <!-- Correct local path -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -14,23 +13,25 @@
     <h1>Musannaf Ibn Abi Shaybah</h1>
     <h2 class="site-subtitle">Complete 37K+ Hadiths in Arabic and English Translation</h2>
     
-<div id="nav" style="text-align:center; margin-bottom:20px;">
-    <a href="index.html">Home</a> | 
-    <a href="about.html">About the Book</a> | 
-    <a href="download.html">Download</a>
-</div>
+    <div id="nav" style="text-align:center; margin-bottom:20px;">
+        <a href="index.html">Home</a> | 
+        <a href="about.html">About the Book</a> | 
+        <a href="download.html">Download</a>
+    </div>
 
     <!-- Jump to Hadith by Number -->
     <div id="jump-container" style="text-align:center; margin-bottom:20px;">
-        <input type="number" id="hadith-number-input" placeholder="Enter Hadith Number" style="padding:5px; width:150px;" />
+        <input type="number" id="hadith-number-input"
+               placeholder="Enter Hadith Number (1–37943)"
+               style="padding:5px; width:180px;" />
         <button onclick="jumpToHadith()" style="padding:5px 10px;">Go</button>
     </div>
 
-    <!-- JS expects this ID -->
+    <!-- Results Area -->
     <div id="results"></div>
 
-    <!-- JS expects this ID -->
-    <div id="pagination"></div>
+    <!-- Pagination -->
+    <div id="pagination" style="text-align:center; margin-top:20px;"></div>
 
     <!-- Correct local path -->
     <script src="app.js"></script>
